@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<!-- Strona-wizytówka przybornika. Działa jako statyczna strona na GitHub Pages. -->
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <!-- viewport -> poprawne skalowanie na telefonie -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Przybornik — proste, przydatne narzędzia</title>
+  <link rel="stylesheet" href="styl.css">
+</head>
+<body>
+
+  <!-- Górny pasek z nawigacją między zakładkami -->
+  <header class="pasek">
+    <div class="marka">🧰 Przybornik</div>
+    <nav class="nawigacja">
+      <!-- data-zakladka łączy przycisk z sekcją o tym samym id -->
+      <button class="link-nawigacji aktywny" data-zakladka="start">Start</button>
+      <button class="link-nawigacji" data-zakladka="detektyw">Detektyw haseł</button>
+      <button class="link-nawigacji" data-zakladka="wydatki">Wydatki</button>
+    </nav>
+  </header>
+
+  <main class="tresc">
+
+    <!-- ====================== SEKCJA: START ====================== -->
+    <section id="start" class="zakladka aktywna">
+      <h1>Proste narzędzia, które po prostu działają</h1>
+      <p class="podtytul">
+        Zbiór małych, użytecznych narzędzi. Dwa z nich działają od ręki tutaj,
+        w przeglądarce — bez instalacji i bez wysyłania Twoich danych.
+      </p>
+
+      <div class="karty">
+        <article class="karta">
+          <h3>🔐 Detektyw haseł</h3>
+          <p>Sprawdź, czy Twoje hasło pojawiło się w wyciekach danych. Hasło
+             nigdy nie opuszcza Twojej przeglądarki.</p>
+          <button class="przycisk" data-zakladka="detektyw">Otwórz</button>
+        </article>
+
+        <article class="karta">
+          <h3>💸 Śledzenie wydatków</h3>
+          <p>Notuj wydatki dla każdej osoby osobno. Dane zapisują się tylko
+             na Twoim urządzeniu — nic nie wychodzi na zewnątrz.</p>
+          <button class="przycisk" data-zakladka="wydatki">Otwórz</button>
+        </article>
+
+        <article class="karta">
+          <h3>🧰 Wersja konsolowa</h3>
+          <p>Cały przybornik istnieje też jako program w Pythonie: generator
+             haseł, organizer plików, optymalizator makro, fiszki z tekstu
+             i skaner nagłówków HTTP.</p>
+          <p class="drobne">Szczegóły w pliku <code>README.md</code> repozytorium.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ==================== SEKCJA: DETEKTYW ==================== -->
+    <section id="detektyw" class="zakladka">
+      <h1>🔐 Detektyw haseł</h1>
+      <p class="podtytul">
+        Sprawdza, czy hasło wyciekło, korzystając z oficjalnej bazy
+        <a href="https://haveibeenpwned.com/Passwords" target="_blank" rel="noopener">Have I Been Pwned</a>.
+      </p>
+
+      <!-- Wyjaśnienie prywatności -- buduje zaufanie u osoby, która to testuje -->
+      <div class="info">
+        🛡️ <strong>Prywatnie:</strong> Twoje hasło nie jest nigdzie wysyłane.
+        Liczymy jego skrót w przeglądarce i wysyłamy tylko 5 pierwszych znaków
+        tego skrótu (tzw. k-anonimowość).
+      </div>
+
+      <div class="formularz">
+        <input type="password" id="pole-hasla" placeholder="Wpisz hasło do sprawdzenia">
+        <button class="przycisk" id="sprawdz-haslo">Sprawdź</button>
+      </div>
+
+      <!-- Tutaj JavaScript wstawi wynik sprawdzenia -->
+      <div id="wynik-hasla" class="wynik"></div>
+    </section>
+
+    <!-- ===================== SEKCJA: WYDATKI ===================== -->
+    <section id="wydatki" class="zakladka">
+      <h1>💸 Śledzenie wydatków</h1>
+      <p class="podtytul">
+        Każda osoba ma swoją listę. Dane zapisują się w Twojej przeglądarce
+        i nie są nigdzie wysyłane.
+      </p>
+
+      <!-- Wybór / dodanie osoby (profilu) -->
+      <div class="formularz">
+        <select id="wybor-osoby"></select>
+        <button class="przycisk wtorny" id="dodaj-osobe">+ Nowa osoba</button>
+      </div>
+
+      <!-- Formularz dodawania wydatku -->
+      <div class="formularz">
+        <input type="text" id="opis-wydatku" placeholder="Na co? (np. zakupy)">
+        <input type="number" id="kwota-wydatku" placeholder="Kwota (zł)" step="0.01" min="0">
+        <select id="kategoria-wydatku">
+          <option value="Jedzenie">Jedzenie</option>
+          <option value="Transport">Transport</option>
+          <option value="Rozrywka">Rozrywka</option>
+          <option value="Rachunki">Rachunki</option>
+          <option value="Zakupy">Zakupy</option>
+          <option value="Inne">Inne</option>
+        </select>
+        <button class="przycisk" id="dodaj-wydatek">Dodaj</button>
+      </div>
+
+      <!-- Podsumowanie i lista wstawiane przez JavaScript -->
+      <div id="podsumowanie-wydatkow" class="podsumowanie"></div>
+      <ul id="lista-wydatkow" class="lista"></ul>
+    </section>
+
+  </main>
+
+  <footer class="stopka">
+    Przybornik — projekt portfolio. Narzędzia działają lokalnie, z poszanowaniem prywatności.
+  </footer>
+
+  <!-- Skrypty na końcu, żeby strona zdążyła się wczytać przed ich uruchomieniem -->
+  <script src="js/nawigacja.js"></script>
+  <script src="js/detektyw.js"></script>
+  <script src="js/wydatki.js"></script>
+</body>
+</html>

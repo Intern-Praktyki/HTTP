@@ -19,10 +19,38 @@ narzędzie jest osobnym, czytelnym plikiem, a uruchamiasz je z wygodnego menu
 | **Organizer plików** | Robi porządek w folderze (np. *Pobrane*) — sortuje pliki do podfolderów wg typu. Najpierw pokazuje podgląd. | dla każdego |
 | **Optymalizator makro i kosztów** | Liczy koszt 1 g białka i ocenia, czy produkt to opłacalne źródło białka. Przydatne na zakupach i na siłowni. | dla każdego |
 | **Generator fiszek z tekstu** | Wyciąga najczęstsze słowa z pliku tekstowego i zapisuje fiszki do CSV (import do Anki/Quizlet). | dla uczących się |
+| **Detektyw haseł** | Sprawdza, czy hasło pojawiło się w wyciekach — bez wysyłania hasła (model k-anonimowości, baza Have I Been Pwned). | dla każdego |
 | **Skaner nagłówków bezpieczeństwa HTTP** | Sprawdza, czy strona ustawia kluczowe nagłówki bezpieczeństwa, i daje wynik punktowy (np. `4/6`). | bardziej techniczne |
 
 > Kolejne narzędzia będą dodawane jako nowe pliki w folderze `narzedzia/` —
 > pojawią się w menu automatycznie, bez zmian w pozostałym kodzie.
+
+---
+
+## Wersja webowa (strona)
+
+Część przybornika działa też jako **strona WWW** (folder [`docs/`](docs/)),
+gotowa do opublikowania przez **GitHub Pages**:
+
+- 🔐 **Detektyw haseł** — sprawdzanie wycieków bezpośrednio w przeglądarce.
+  Hasło nie opuszcza Twojego urządzenia: liczony jest jego skrót, a do API
+  wysyłane jest tylko 5 pierwszych znaków skrótu (k-anonimowość).
+- 💸 **Śledzenie wydatków** — osobna lista dla każdej osoby, z podsumowaniem
+  i podziałem na kategorie. Dane zapisują się **tylko w Twojej przeglądarce**
+  (localStorage) i nie są nigdzie wysyłane.
+
+Strona nie wymaga żadnych bibliotek ani serwera — to czysty HTML/CSS/JS.
+
+### Jak włączyć GitHub Pages
+
+1. Wejdź w repozytorium w **Settings → Pages**.
+2. W sekcji *Build and deployment* wybierz źródło **Deploy from a branch**.
+3. Ustaw gałąź (np. `main`) i folder **`/docs`**, zapisz.
+4. Po chwili strona będzie dostępna pod adresem
+   `https://<twoja-nazwa>.github.io/<repo>/`.
+
+Aby obejrzeć stronę lokalnie, otwórz `docs/index.html` w przeglądarce
+(albo uruchom prosty serwer: `python3 -m http.server -d docs`).
 
 ---
 
@@ -37,7 +65,12 @@ narzędzie jest osobnym, czytelnym plikiem, a uruchamiasz je z wygodnego menu
 │   ├── organizer_plikow.py       # narzędzie: organizer plików
 │   ├── kalkulator_makro.py       # narzędzie: optymalizator makro i kosztów
 │   ├── ekstraktor_slowek.py      # narzędzie: generator fiszek z tekstu
+│   ├── skaner_wyciekow.py        # narzędzie: detektyw haseł (wycieki)
 │   └── skaner_naglowkow.py       # narzędzie: skaner nagłówków HTTP
+├── docs/                         # wersja webowa (GitHub Pages)
+│   ├── index.html                # strona z zakładkami
+│   ├── styl.css                  # wygląd strony
+│   └── js/                       # logika: nawigacja, detektyw haseł, wydatki
 ├── README.md
 └── requirements.txt
 ```
@@ -89,11 +122,12 @@ z pytaniami na ekranie.
 ============================================================
   PRZYBORNIK -- proste, przydatne narzędzia
 ============================================================
-  1) Generator i audytor haseł
+  1) Detektyw haseł (sprawdzanie wycieków)
   2) Generator fiszek z tekstu
-  3) Optymalizator makro i kosztów (białko)
-  4) Organizer plików
-  5) Skaner nagłówków bezpieczeństwa HTTP
+  3) Generator i audytor haseł
+  4) Optymalizator makro i kosztów (białko)
+  5) Organizer plików
+  6) Skaner nagłówków bezpieczeństwa HTTP
   0) Wyjście
 ============================================================
 
@@ -119,6 +153,9 @@ python3 main.py makro --cena 15 --waga 300 --bialko 18
 
 # Fiszki: wyciągnij najczęstsze słowa z pliku i zapisz CSV
 python3 main.py slowka artykul.txt --ile 30 --jezyk fr
+
+# Detektyw haseł: zapyta o hasło ukrytym wpisem (nie zapisze się w historii)
+python3 main.py wycieki
 
 # Skaner nagłówków: jedna lub wiele stron, opcjonalnie JSON
 python3 main.py skaner-naglowkow example.com
