@@ -4,9 +4,9 @@ Proste narzędzie CLI w Pythonie, które sprawdza, czy strona internetowa
 ustawia kluczowe **nagłówki bezpieczeństwa HTTP**. Dostajesz czytelny raport
 oraz wynik punktowy (np. `4/6`).
 
-> Element mojego portfolio z obszaru **AI Security**. Nie jestem programistą —
-> buduję z pomocą AI, dlatego kod jest celowo prosty i obficie komentowany,
-> aby dało się go w całości zaudytować.
+> Element mojego portfolio z obszaru **AI Security**. Kod jest celowo prosty,
+> przejrzysty i obficie komentowany — tak, aby każdy mógł go w całości
+> przeczytać i zaudytować.
 
 ---
 
@@ -156,7 +156,8 @@ Cały program to jeden plik [`scanner.py`](scanner.py):
 3. porównuje otrzymane nagłówki z listą oczekiwanych nagłówków bezpieczeństwa,
 4. buduje wynik jako słownik i wypisuje go jako tekst lub JSON.
 
-Każda nieoczywista linijka ma komentarz po polsku wyjaśniający „po co to jest".
+Każda nieoczywista linijka ma komentarz po polsku wyjaśniający „po co to jest" —
+dzięki temu kod czyta się jak dokumentację.
 
 ---
 
