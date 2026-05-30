@@ -40,6 +40,15 @@ gotowa do opublikowania przez **GitHub Pages**:
   (localStorage) i nie są nigdzie wysyłane.
 
 Strona nie wymaga żadnych bibliotek ani serwera — to czysty HTML/CSS/JS.
+Wygląd jest wzorowany na menu pauzy z gier (ciemne, półprzezroczyste panele
+i zdjęcie w tle pod kolorowym cieniem).
+
+### Własne zdjęcie w tle
+
+Aby ustawić własne tło (np. zdjęcie ulubionego miejsca), wrzuć plik
+**`docs/tlo.jpg`** — pojawi się automatycznie. Dopóki go nie ma, widoczny jest
+zapasowy, jednolity gradient (strona nigdy nie pokazuje „zepsutego obrazka").
+Odcień kolorowej poświaty zmienisz w `docs/styl.css` (zmienna `--cien-koloru`).
 
 ### Szybki start (uruchom stronę lokalnie)
 

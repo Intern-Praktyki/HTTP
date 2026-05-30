@@ -10,14 +10,20 @@
 </head>
 <body>
 
+  <!-- Warstwa tła: zdjęcie + kolorowy cień (jak w menu GTA V).
+       Wrzuć własne zdjęcie jako docs/tlo.jpg, a pojawi się automatycznie.
+       Dopóki go nie ma, widoczny jest sam gradient (fallback). -->
+  <div class="tlo"></div>
+  <div class="tlo-cien"></div>
+
   <!-- Górny pasek z nawigacją między zakładkami -->
   <header class="pasek">
-    <div class="marka">🧰 Przybornik</div>
+    <div class="marka">PRZYBORNIK</div>
     <nav class="nawigacja">
       <!-- data-zakladka łączy przycisk z sekcją o tym samym id -->
-      <button class="link-nawigacji aktywny" data-zakladka="start">Start</button>
-      <button class="link-nawigacji" data-zakladka="detektyw">Detektyw haseł</button>
-      <button class="link-nawigacji" data-zakladka="wydatki">Wydatki</button>
+      <button class="link-nawigacji aktywny" data-zakladka="start">START</button>
+      <button class="link-nawigacji" data-zakladka="detektyw">DETEKTYW HASEŁ</button>
+      <button class="link-nawigacji" data-zakladka="wydatki">WYDATKI</button>
     </nav>
   </header>
 

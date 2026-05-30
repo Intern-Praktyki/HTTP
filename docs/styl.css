@@ -1,17 +1,22 @@
 /* Style strony. Bez żadnych zewnętrznych bibliotek -- wszystko tutaj,
    żeby strona działała offline i na GitHub Pages bez dodatkowych zależności. */
 
-/* Zmienne kolorów -- zmiana w jednym miejscu zmienia cały motyw. */
+/* Zmienne kolorów -- zmiana w jednym miejscu zmienia cały motyw.
+   Motyw inspirowany menu pauzy z GTA V: zdjęcie w tle, kolorowy cień,
+   półprzezroczyste panele i biały pasek podświetlenia aktywnej pozycji. */
 :root {
-  --tlo: #0f172a;          /* ciemne tło */
-  --karta: #1e293b;        /* tło kart i pól */
-  --akcent: #38bdf8;       /* kolor wyróżnienia (jasny błękit) */
-  --akcent-ciemny: #0ea5e9;
-  --tekst: #e2e8f0;        /* jasny tekst */
-  --tekst-szary: #94a3b8;  /* przygaszony tekst */
-  --zielony: #22c55e;
-  --czerwony: #ef4444;
-  --promien: 12px;         /* zaokrąglenie rogów */
+  --tlo: #0b1020;          /* bardzo ciemne tło bazowe */
+  --panel: rgba(15, 22, 38, .72);   /* półprzezroczysty panel na tle zdjęcia */
+  --panel-mocny: rgba(15, 22, 38, .9);
+  --akcent: #43d1c4;       /* morski akcent (jak detale w menu GTA) */
+  --akcent-ciemny: #2bb3a6;
+  --tekst: #f1f5f9;        /* jasny tekst */
+  --tekst-szary: #aab4c5;  /* przygaszony tekst */
+  --zielony: #34d399;
+  --czerwony: #f87171;
+  --promien: 6px;          /* lekkie zaokrąglenie (menu GTA jest dość kanciaste) */
+  /* Kolor "cienia" kładzionego na zdjęcie w tle -- tu zmieniasz odcień poświaty. */
+  --cien-koloru: rgba(8, 12, 24, .82);
 }
 
 /* Reset podstawowych marginesów dla spójnego wyglądu w różnych przeglądarkach. */
@@ -27,70 +32,116 @@ body {
   flex-direction: column;
 }
 
-/* ----- Górny pasek ----- */
+/* ----- Tło: zdjęcie + kolorowy cień (efekt jak w menu GTA V) ----- */
+/* Warstwa ze zdjęciem. Trzymana na stałe (fixed), żeby nie przewijała się z treścią. */
+.tlo {
+  position: fixed;
+  inset: 0;                /* rozciąga na cały ekran */
+  z-index: -2;
+  background-image: url("tlo.jpg");   /* <- wrzuć tu swoje zdjęcie ronda */
+  background-size: cover;             /* wypełnia cały ekran */
+  background-position: center;
+  /* Gdy pliku tlo.jpg brak, widać kolor bazowy zamiast zepsutego obrazka. */
+  background-color: var(--tlo);
+}
+/* Warstwa "cienia": przyciemnia zdjęcie i nadaje mu kolorową poświatę,
+   dzięki czemu tekst jest czytelny, a całość ma klimat menu z gry. */
+.tlo-cien {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(115deg, rgba(67, 209, 196, .18), transparent 55%),
+    linear-gradient(0deg, var(--cien-koloru), rgba(8, 12, 24, .55));
+}
+
+/* ----- Górny pasek (lista pozycji jak w menu GTA) ----- */
 .pasek {
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 12px;
-  padding: 16px 24px;
-  background: var(--karta);
-  border-bottom: 1px solid #334155;
+  padding: 18px 28px;
+  background: var(--panel-mocny);
+  border-bottom: 2px solid var(--akcent);
+  backdrop-filter: blur(4px);   /* delikatne rozmycie tła pod paskiem */
 }
-.marka { font-size: 1.3rem; font-weight: 700; }
-.nawigacja { display: flex; gap: 8px; flex-wrap: wrap; }
+.marka { font-size: 1.25rem; font-weight: 800; letter-spacing: 3px; }
+.nawigacja { display: flex; gap: 4px; flex-wrap: wrap; }
 
+/* Pozycje menu: domyślnie przezroczyste z przygaszonym tekstem. */
 .link-nawigacji {
   background: transparent;
   color: var(--tekst-szary);
   border: none;
-  padding: 8px 14px;
-  border-radius: var(--promien);
+  border-left: 3px solid transparent;  /* miejsce na pasek aktywnej pozycji */
+  padding: 8px 16px;
   cursor: pointer;
-  font-size: 1rem;
-  transition: all .15s;
+  font-size: .95rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  transition: all .12s;
 }
-.link-nawigacji:hover { color: var(--tekst); background: #334155; }
-.link-nawigacji.aktywny { color: var(--tlo); background: var(--akcent); font-weight: 600; }
+.link-nawigacji:hover { color: var(--tekst); background: rgba(255, 255, 255, .06); }
+/* Aktywna pozycja: biały pasek podświetlenia + ciemny tekst -- jak w GTA V. */
+.link-nawigacji.aktywny {
+  color: #0b1020;
+  background: #f1f5f9;
+  font-weight: 800;
+}
 
 /* ----- Treść ----- */
-.tresc { flex: 1; width: 100%; max-width: 820px; margin: 0 auto; padding: 32px 24px; }
+.tresc { flex: 1; width: 100%; max-width: 860px; margin: 0 auto; padding: 36px 24px; }
 
 /* Zakładki: domyślnie ukryte, pokazujemy tylko aktywną (klasą .aktywna). */
 .zakladka { display: none; }
 .zakladka.aktywna { display: block; animation: pojaw .2s ease; }
 @keyframes pojaw { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; } }
 
-h1 { font-size: 1.8rem; margin-bottom: 8px; }
+/* Nagłówek z cienką linią pod spodem -- dyskretny akcent jak w menu GTA. */
+h1 {
+  font-size: 1.9rem;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, .12);
+}
 .podtytul { color: var(--tekst-szary); margin-bottom: 24px; }
 a { color: var(--akcent); }
 
 /* ----- Karty na stronie startowej ----- */
 .karty { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
 .karta {
-  background: var(--karta);
-  border: 1px solid #334155;
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, .1);
   border-radius: var(--promien);
   padding: 20px;
+  backdrop-filter: blur(6px);
+  transition: transform .12s, border-color .12s;
 }
+/* Lekkie uniesienie karty po najechaniu -- subtelna interaktywność. */
+.karta:hover { transform: translateY(-3px); border-color: var(--akcent); }
 .karta h3 { margin-bottom: 8px; }
 .karta p { color: var(--tekst-szary); margin-bottom: 12px; }
 .drobne { font-size: .85rem; }
-code { background: #0b1220; padding: 2px 6px; border-radius: 6px; }
+code { background: rgba(0, 0, 0, .4); padding: 2px 6px; border-radius: 6px; }
 
 /* ----- Formularze i przyciski ----- */
 .formularz { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
 input, select {
-  background: var(--karta);
+  background: var(--panel);
   color: var(--tekst);
-  border: 1px solid #334155;
+  border: 1px solid rgba(255, 255, 255, .15);
   border-radius: var(--promien);
   padding: 12px 14px;
   font-size: 1rem;
   flex: 1;
   min-width: 140px;
+  backdrop-filter: blur(6px);
 }
+input::placeholder { color: var(--tekst-szary); }
 input:focus, select:focus { outline: 2px solid var(--akcent); }
 
 .przycisk {
@@ -105,17 +156,18 @@ input:focus, select:focus { outline: 2px solid var(--akcent); }
   transition: background .15s;
 }
 .przycisk:hover { background: var(--akcent-ciemny); }
-.przycisk.wtorny { background: #334155; color: var(--tekst); }
-.przycisk.wtorny:hover { background: #475569; }
+.przycisk.wtorny { background: rgba(255, 255, 255, .12); color: var(--tekst); }
+.przycisk.wtorny:hover { background: rgba(255, 255, 255, .2); }
 
 /* ----- Komunikaty i wyniki ----- */
 .info {
-  background: #0b2942;
+  background: rgba(67, 209, 196, .12);
   border: 1px solid var(--akcent-ciemny);
   border-radius: var(--promien);
   padding: 14px 16px;
   margin-bottom: 16px;
   font-size: .95rem;
+  backdrop-filter: blur(6px);
 }
 .wynik { font-size: 1.1rem; padding: 8px 0; min-height: 1.5em; }
 .wynik.dobry { color: var(--zielony); }
@@ -124,16 +176,17 @@ input:focus, select:focus { outline: 2px solid var(--akcent); }
 
 /* ----- Wydatki: podsumowanie i lista ----- */
 .podsumowanie {
-  background: var(--karta);
-  border: 1px solid #334155;
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, .1);
   border-radius: var(--promien);
   padding: 16px;
   margin-bottom: 16px;
+  backdrop-filter: blur(6px);
 }
 .podsumowanie .suma { font-size: 1.5rem; font-weight: 700; color: var(--akcent); }
 .kategorie { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
 .znacznik {
-  background: #0b1220;
+  background: rgba(0, 0, 0, .4);
   border-radius: 20px;
   padding: 4px 12px;
   font-size: .85rem;
@@ -146,11 +199,12 @@ input:focus, select:focus { outline: 2px solid var(--akcent); }
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  background: var(--karta);
-  border: 1px solid #334155;
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, .1);
   border-radius: var(--promien);
   padding: 12px 16px;
   margin-bottom: 8px;
+  backdrop-filter: blur(6px);
 }
 .lista .opis { flex: 1; }
 .lista .kat { color: var(--tekst-szary); font-size: .85rem; }
@@ -171,5 +225,7 @@ input:focus, select:focus { outline: 2px solid var(--akcent); }
   color: var(--tekst-szary);
   font-size: .85rem;
   padding: 20px;
-  border-top: 1px solid #334155;
+  border-top: 1px solid rgba(255, 255, 255, .1);
+  background: var(--panel);
+  backdrop-filter: blur(4px);
 }
