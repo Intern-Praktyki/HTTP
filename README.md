@@ -1,8 +1,9 @@
-# Skaner nagłówków bezpieczeństwa HTTP
+# Przybornik AI Security
 
-Proste narzędzie CLI w Pythonie, które sprawdza, czy strona internetowa
-ustawia kluczowe **nagłówki bezpieczeństwa HTTP**. Dostajesz czytelny raport
-oraz wynik punktowy (np. `4/6`).
+Zbiór prostych, użytecznych narzędzi bezpieczeństwa w Pythonie, połączonych
+**jednym menu głównym**. Zamiast wielu osobnych repozytoriów — jeden projekt,
+w którym każde narzędzie jest osobnym, czytelnym plikiem, a uruchamiasz je
+z wygodnego menu (lub bezpośrednio z linii poleceń).
 
 > Element mojego portfolio z obszaru **AI Security**. Kod jest celowo prosty,
 > przejrzysty i obficie komentowany — tak, aby każdy mógł go w całości
@@ -10,32 +11,39 @@ oraz wynik punktowy (np. `4/6`).
 
 ---
 
-## Po co to jest? Jaki problem rozwiązuje?
+## Dostępne narzędzia
 
-Przeglądarki potrafią chronić użytkowników przed wieloma atakami (XSS,
-clickjacking, podsłuch ruchu), ale **tylko wtedy, gdy serwer wyśle odpowiednie
-nagłówki HTTP**. W praktyce wiele stron tych nagłówków nie ustawia lub robi to
-błędnie.
-
-Ręczne sprawdzanie tego w narzędziach deweloperskich przeglądarki jest żmudne.
-To narzędzie robi to za Ciebie w kilka sekund — z linii poleceń, dla jednej lub
-wielu stron naraz, a dzięki opcji `--json` także w sposób nadający się do
-automatyzacji (np. w pipeline DevSecOps / CI/CD).
-
-### Jakie nagłówki sprawdza
-
-| Nagłówek | Po co jest |
+| Narzędzie | Co robi |
 |---|---|
-| `Content-Security-Policy` | Ogranicza skąd ładują się skrypty/style i utrudnia ataki XSS. |
-| `Strict-Transport-Security` | Wymusza HTTPS i chroni przed podsłuchem. |
-| `X-Frame-Options` | Blokuje osadzanie strony w ramce (ochrona przed clickjackingiem). |
-| `X-Content-Type-Options` | Wyłącza zgadywanie typu pliku przez przeglądarkę (MIME sniffing). |
-| `Referrer-Policy` | Kontroluje ile informacji o adresie wysyłamy przy przejściu dalej. |
-| `Permissions-Policy` | Ogranicza dostęp strony do funkcji jak kamera czy mikrofon. |
+| **Skaner nagłówków bezpieczeństwa HTTP** | Sprawdza, czy strona ustawia kluczowe nagłówki bezpieczeństwa, i daje wynik punktowy (np. `4/6`). |
 
-Dodatkowo narzędzie zaznacza proste **słabe konfiguracje**, np. HSTS bez
-parametru `max-age`, `X-Content-Type-Options` bez wartości `nosniff` czy
-`X-Frame-Options` z nietypową wartością.
+> Kolejne narzędzia będą dodawane jako nowe pliki w folderze `narzedzia/` —
+> pojawią się w menu automatycznie, bez zmian w pozostałym kodzie.
+
+---
+
+## Jak to jest zbudowane
+
+```
+.
+├── main.py                       # menu główne — jedyny plik, który uruchamiasz
+├── narzedzia/                    # każde narzędzie osobno (ładnie rozdzielone)
+│   ├── __init__.py               # oznacza folder jako pakiet Pythona
+│   └── skaner_naglowkow.py       # narzędzie: skaner nagłówków HTTP
+├── README.md
+└── requirements.txt
+```
+
+Pomysł jest prosty: **`main.py` to wspólne „GUI"** (interaktywne menu w
+terminalu) i wspólny punkt wejścia, a logika każdego narzędzia mieszka w
+osobnym pliku. `main.py` sam wykrywa narzędzia w folderze `narzedzia/`, więc
+dodanie nowego = dorzucenie jednego pliku.
+
+Każde narzędzie udostępnia ten sam prosty „interfejs":
+
+- `NAZWA`, `TYTUL`, `OPIS` — metadane pokazywane w menu,
+- `uruchom_interaktywnie()` — tryb z menu (pyta o dane przez klawiaturę),
+- `uruchom_cli(argv)` — tryb z linii poleceń (do automatyzacji / CI/CD).
 
 ---
 
@@ -46,7 +54,7 @@ Wymagany Python 3.7 lub nowszy.
 ```bash
 # 1. Pobierz repozytorium
 git clone <adres-tego-repozytorium>
-cd HTTP
+cd <nazwa-folderu>
 
 # 2. (zalecane) utwórz wirtualne środowisko
 python3 -m venv venv
@@ -60,33 +68,61 @@ pip install -r requirements.txt
 
 ## Użycie
 
+### 1) Menu interaktywne (najprościej)
+
+```bash
+python3 main.py
+```
+
+Zobaczysz numerowane menu — wpisujesz numer narzędzia i postępujesz zgodnie
+z pytaniami na ekranie.
+
+```
+============================================================
+  PRZYBORNIK AI SECURITY -- menu główne
+============================================================
+  1) Skaner nagłówków bezpieczeństwa HTTP
+  0) Wyjście
+============================================================
+
+Wybierz narzędzie (numer):
+```
+
+### 2) Tryb CLI (do automatyzacji)
+
+Uruchom konkretne narzędzie od razu, podając jego nazwę i argumenty:
+
 ```bash
 # Sprawdź jedną stronę
-python3 scanner.py example.com
+python3 main.py skaner-naglowkow example.com
 
-# Sprawdź kilka stron naraz
-python3 scanner.py example.com github.com mojastrona.pl
+# Kilka stron naraz
+python3 main.py skaner-naglowkow example.com github.com mojastrona.pl
 
-# Wynik w formacie JSON (do automatyzacji)
-python3 scanner.py example.com --json
+# Wynik w formacie JSON (do automatyzacji / DevSecOps)
+python3 main.py skaner-naglowkow example.com --json
 
-# Zmień limit czasu oczekiwania na odpowiedź (domyślnie 10 s)
-python3 scanner.py example.com --timeout 5
+# Zmień limit czasu na odpowiedź (domyślnie 10 s)
+python3 main.py skaner-naglowkow example.com --timeout 5
+```
 
-# Pomoc
-python3 scanner.py --help
+### Polecenia pomocnicze
+
+```bash
+python3 main.py --list      # lista dostępnych narzędzi
+python3 main.py --help      # pomoc ogólna
 ```
 
 Adres możesz podać ze schematem (`https://example.com`) lub bez — wtedy
 narzędzie domyślnie dopisze `https://`.
 
-> **Uwaga dotycząca bezpieczeństwa:** narzędzie wysyła zapytania **wyłącznie**
-> do adresów, które sam podasz. Nie kontaktuje się z żadnymi innymi serwerami,
-> nie zbiera ani nie wysyła żadnych danych.
+> **Uwaga dotycząca bezpieczeństwa:** narzędzia wysyłają zapytania **wyłącznie**
+> do adresów, które sam podasz. Nie kontaktują się z żadnymi innymi serwerami,
+> nie zbierają ani nie wysyłają żadnych danych.
 
 ---
 
-## Przykładowy wynik
+## Przykładowy wynik (skaner nagłówków)
 
 ### Tryb tekstowy
 
@@ -142,22 +178,36 @@ Wynik: 2/6
 
 ### Kody wyjścia
 
-- `0` — wszystkie strony udało się sprawdzić.
+- `0` — wszystko sprawdzone bez błędów.
 - `1` — przynajmniej jedna strona zwróciła błąd połączenia (przydatne w CI/CD).
 
 ---
 
-## Jak działa kod (krótko)
+## Jakie nagłówki sprawdza skaner
 
-Cały program to jeden plik [`scanner.py`](scanner.py):
+| Nagłówek | Po co jest |
+|---|---|
+| `Content-Security-Policy` | Ogranicza skąd ładują się skrypty/style i utrudnia ataki XSS. |
+| `Strict-Transport-Security` | Wymusza HTTPS i chroni przed podsłuchem. |
+| `X-Frame-Options` | Blokuje osadzanie strony w ramce (ochrona przed clickjackingiem). |
+| `X-Content-Type-Options` | Wyłącza zgadywanie typu pliku przez przeglądarkę (MIME sniffing). |
+| `Referrer-Policy` | Kontroluje ile informacji o adresie wysyłamy przy przejściu dalej. |
+| `Permissions-Policy` | Ogranicza dostęp strony do funkcji jak kamera czy mikrofon. |
 
-1. czyta argumenty z linii poleceń (`argparse`),
-2. dla każdego adresu wykonuje jedno zapytanie `GET` z timeoutem (`requests`),
-3. porównuje otrzymane nagłówki z listą oczekiwanych nagłówków bezpieczeństwa,
-4. buduje wynik jako słownik i wypisuje go jako tekst lub JSON.
+Dodatkowo skaner zaznacza proste **słabe konfiguracje**, np. HSTS bez parametru
+`max-age`, `X-Content-Type-Options` bez wartości `nosniff` czy `X-Frame-Options`
+z nietypową wartością.
 
-Każda nieoczywista linijka ma komentarz po polsku wyjaśniający „po co to jest" —
-dzięki temu kod czyta się jak dokumentację.
+---
+
+## Jak dodać własne narzędzie
+
+1. Utwórz nowy plik w `narzedzia/`, np. `narzedzia/moje_narzedzie.py`.
+2. Dodaj w nim metadane `NAZWA`, `TYTUL`, `OPIS` oraz funkcje
+   `uruchom_interaktywnie()` i `uruchom_cli(argv)`.
+3. Gotowe — narzędzie samo pojawi się w menu i w trybie CLI.
+
+(Najłatwiej podejrzeć `narzedzia/skaner_naglowkow.py` jako wzór.)
 
 ---
 

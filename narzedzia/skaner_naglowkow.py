@@ -1,24 +1,30 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Skaner nagłówków bezpieczeństwa HTTP.
+Narzędzie: Skaner nagłówków bezpieczeństwa HTTP.
 
-Narzędzie CLI, które pobiera nagłówki HTTP wskazanych stron i sprawdza,
-czy obecne są kluczowe nagłówki bezpieczeństwa. Wypisuje czytelny raport
-oraz wynik punktowy. Obsługuje też tryb --json dla automatyzacji.
+Pobiera nagłówki HTTP wskazanych stron i sprawdza obecność kluczowych
+nagłówków bezpieczeństwa. Działa zarówno z menu głównego (tryb interaktywny),
+jak i bezpośrednio z linii poleceń (tryb CLI).
 
-Autor portfolio AI Security. Kod celowo prosty i obficie komentowany.
+Kod celowo prosty i obficie komentowany, aby dało się go w całości przeczytać.
 """
 
-# argparse -> czytanie argumentów z linii poleceń (adresy stron, opcja --json)
+# argparse -> czytanie argumentów w trybie CLI (adresy, --json, --timeout)
 import argparse
-# json -> zamiana wyniku na format JSON, gdy użytkownik poda --json
+# json -> zamiana wyniku na format JSON, gdy użytkownik chce wyjścia dla automatyzacji
 import json
-# sys -> wyjście z programu z odpowiednim kodem zakończenia (przydatne w CI/CD)
-import sys
 
 # requests -> jedyna zewnętrzna zależność; służy do wysłania zapytania HTTP
 import requests
+
+
+# --- METADANE NARZĘDZIA ---------------------------------------------------
+# Te trzy wartości odczytuje menu główne (main.py), żeby pokazać narzędzie
+# na liście oraz pozwolić uruchomić je z CLI po nazwie.
+NAZWA = "skaner-naglowkow"                              # identyfikator do CLI
+TYTUL = "Skaner nagłówków bezpieczeństwa HTTP"          # ładna nazwa w menu
+OPIS = "Sprawdza, czy strona ustawia kluczowe nagłówki bezpieczeństwa HTTP."
+# --------------------------------------------------------------------------
 
 
 # Słownik opisujący nagłówki bezpieczeństwa, które sprawdzamy.
@@ -122,7 +128,7 @@ def skanuj_strone(adres, timeout):
         wynik["error"] = "błąd połączenia (sprawdź adres lub sieć)"
         return wynik
     except requests.exceptions.RequestException as blad:
-        # Każdy inny błąd biblioteki requests łapiemy tutaj jako ostatnią deskę ratunku.
+        # Każdy inny błąd biblioteki requests łapiemy jako ostatnią deskę ratunku.
         wynik["error"] = "błąd zapytania: " + str(blad)
         return wynik
 
@@ -195,13 +201,37 @@ def wypisz_raport_tekstowy(wynik):
     print("=" * 60)
 
 
-def main():
+def _wykonaj(adresy, timeout, json_tryb):
     """
-    Punkt wejścia programu: czyta argumenty i uruchamia skanowanie.
+    Wspólna logika dla trybu CLI i interaktywnego: skanuje wszystkie adresy
+    i wypisuje wynik (tekst albo JSON). Zwraca kod wyjścia (0 = ok, 1 = błąd).
+
+    Trzymamy to w jednym miejscu, żeby nie powtarzać kodu w dwóch funkcjach.
     """
-    # Konfiguracja parsera argumentów -- opisy pojawią się przy --help.
+    # Skanujemy każdy adres po kolei i zbieramy wyniki na liście.
+    wszystkie_wyniki = [skanuj_strone(adres, timeout) for adres in adresy]
+
+    if json_tryb:
+        # ensure_ascii=False -> polskie znaki zostają czytelne, nie jako \uXXXX.
+        # indent=2 -> ładne wcięcia, łatwiej czytać i parsować.
+        print(json.dumps(wszystkie_wyniki, ensure_ascii=False, indent=2))
+    else:
+        for wynik in wszystkie_wyniki:
+            wypisz_raport_tekstowy(wynik)
+
+    # Kod wyjścia 1, jeśli którakolwiek strona zwróciła błąd -- przydatne w CI/CD.
+    byl_blad = any(w["error"] for w in wszystkie_wyniki)
+    return 1 if byl_blad else 0
+
+
+def uruchom_cli(argv):
+    """
+    Tryb CLI: dostaje listę argumentów (bez nazwy narzędzia) i je przetwarza.
+    Zwraca kod wyjścia, którym posłuży się main.py.
+    """
     parser = argparse.ArgumentParser(
-        description="Skaner nagłówków bezpieczeństwa HTTP."
+        prog="main.py " + NAZWA,
+        description=OPIS,
     )
     # nargs="+" -> wymaga przynajmniej jednego adresu, ale pozwala podać więcej.
     parser.add_argument(
@@ -209,43 +239,44 @@ def main():
         nargs="+",
         help="Jeden lub więcej adresów stron do sprawdzenia (np. example.com).",
     )
-    # Opcjonalna flaga --json przełącza wyjście na format JSON.
     parser.add_argument(
         "--json",
         action="store_true",
         help="Wypisz wynik w formacie JSON (dla automatyzacji).",
     )
-    # Opcjonalny timeout w sekundach; domyślnie 10 -- rozsądny kompromis.
     parser.add_argument(
         "--timeout",
         type=float,
         default=10.0,
         help="Limit czasu na odpowiedź serwera w sekundach (domyślnie 10).",
     )
-    argumenty = parser.parse_args()
-
-    # Skanujemy każdy adres po kolei i zbieramy wyniki na liście.
-    wszystkie_wyniki = []
-    for adres in argumenty.adresy:
-        wszystkie_wyniki.append(skanuj_strone(adres, argumenty.timeout))
-
-    if argumenty.json:
-        # Tryb JSON: jeden czytelny obiekt z całą listą wyników.
-        # ensure_ascii=False -> polskie znaki zostają czytelne, nie jako \uXXXX.
-        # indent=2 -> ładne wcięcia, łatwiej czytać i parsować.
-        print(json.dumps(wszystkie_wyniki, ensure_ascii=False, indent=2))
-    else:
-        # Tryb tekstowy: czytelny raport dla człowieka.
-        for wynik in wszystkie_wyniki:
-            wypisz_raport_tekstowy(wynik)
-
-    # Kod wyjścia: 1, jeśli którakolwiek strona zwróciła błąd połączenia.
-    # Dzięki temu narzędzie dobrze współpracuje z pipeline'ami CI/CD.
-    byl_blad = any(w["error"] for w in wszystkie_wyniki)
-    sys.exit(1 if byl_blad else 0)
+    argumenty = parser.parse_args(argv)
+    return _wykonaj(argumenty.adresy, argumenty.timeout, argumenty.json)
 
 
-# Standardowy "strażnik" Pythona: uruchamia main() tylko gdy plik
-# jest odpalany bezpośrednio, a nie importowany jako moduł.
-if __name__ == "__main__":
-    main()
+def uruchom_interaktywnie():
+    """
+    Tryb interaktywny: uruchamiany z menu głównego. Pyta użytkownika o dane
+    przez input() i wypisuje raport. Zwraca kod wyjścia.
+    """
+    print("")
+    print(TYTUL)
+    print(OPIS)
+    print("")
+
+    # Pobieramy adresy od użytkownika. .strip() usuwa zbędne spacje z brzegów.
+    linia = input("Podaj adres(y) oddzielone spacją: ").strip()
+    if not linia:
+        # Pusta odpowiedź -> nie ma czego skanować.
+        print("Nie podano żadnego adresu.")
+        return 1
+
+    # .split() bez argumentu dzieli tekst po dowolnej liczbie spacji.
+    adresy = linia.split()
+
+    # Pytamy, czy użytkownik chce wynik w JSON. Domyślnie nie (zwykły raport).
+    odp = input("Wynik w formacie JSON? (t/N): ").strip().lower()
+    json_tryb = odp in ("t", "tak", "y", "yes")
+
+    print("")
+    return _wykonaj(adresy, timeout=10.0, json_tryb=json_tryb)
