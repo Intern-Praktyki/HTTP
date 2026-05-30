@@ -1,21 +1,23 @@
-# Przybornik AI Security
+# Przybornik — proste, przydatne narzędzia
 
-Zbiór prostych, użytecznych narzędzi bezpieczeństwa w Pythonie, połączonych
-**jednym menu głównym**. Zamiast wielu osobnych repozytoriów — jeden projekt,
-w którym każde narzędzie jest osobnym, czytelnym plikiem, a uruchamiasz je
-z wygodnego menu (lub bezpośrednio z linii poleceń).
+Zbiór małych, użytecznych narzędzi w Pythonie, połączonych **jednym menu
+głównym**. Zamiast wielu osobnych repozytoriów — jeden projekt, w którym każde
+narzędzie jest osobnym, czytelnym plikiem, a uruchamiasz je z wygodnego menu
+(lub bezpośrednio z linii poleceń).
 
-> Element mojego portfolio z obszaru **AI Security**. Kod jest celowo prosty,
-> przejrzysty i obficie komentowany — tak, aby każdy mógł go w całości
-> przeczytać i zaudytować.
+> Element mojego portfolio. Pomysł jest prosty: pokazać, że potrafię szybko
+> składać **przydatne, działające narzędzia** — czytelnie i z dobrą
+> dokumentacją. Kod jest celowo prosty, tak aby każdy mógł go przeczytać.
 
 ---
 
 ## Dostępne narzędzia
 
-| Narzędzie | Co robi |
-|---|---|
-| **Skaner nagłówków bezpieczeństwa HTTP** | Sprawdza, czy strona ustawia kluczowe nagłówki bezpieczeństwa, i daje wynik punktowy (np. `4/6`). |
+| Narzędzie | Co robi | Dla kogo |
+|---|---|---|
+| **Generator i audytor haseł** | Tworzy mocne hasła i ocenia, czy Twoje hasło jest dobre. Działa offline. | dla każdego |
+| **Organizer plików** | Robi porządek w folderze (np. *Pobrane*) — sortuje pliki do podfolderów wg typu. Najpierw pokazuje podgląd. | dla każdego |
+| **Skaner nagłówków bezpieczeństwa HTTP** | Sprawdza, czy strona ustawia kluczowe nagłówki bezpieczeństwa, i daje wynik punktowy (np. `4/6`). | bardziej techniczne |
 
 > Kolejne narzędzia będą dodawane jako nowe pliki w folderze `narzedzia/` —
 > pojawią się w menu automatycznie, bez zmian w pozostałym kodzie.
@@ -29,6 +31,8 @@ z wygodnego menu (lub bezpośrednio z linii poleceń).
 ├── main.py                       # menu główne — jedyny plik, który uruchamiasz
 ├── narzedzia/                    # każde narzędzie osobno (ładnie rozdzielone)
 │   ├── __init__.py               # oznacza folder jako pakiet Pythona
+│   ├── generator_hasel.py        # narzędzie: generator i audytor haseł
+│   ├── organizer_plikow.py       # narzędzie: organizer plików
 │   └── skaner_naglowkow.py       # narzędzie: skaner nagłówków HTTP
 ├── README.md
 └── requirements.txt
@@ -79,9 +83,11 @@ z pytaniami na ekranie.
 
 ```
 ============================================================
-  PRZYBORNIK AI SECURITY -- menu główne
+  PRZYBORNIK -- proste, przydatne narzędzia
 ============================================================
-  1) Skaner nagłówków bezpieczeństwa HTTP
+  1) Generator i audytor haseł
+  2) Organizer plików
+  3) Skaner nagłówków bezpieczeństwa HTTP
   0) Wyjście
 ============================================================
 
@@ -93,16 +99,18 @@ Wybierz narzędzie (numer):
 Uruchom konkretne narzędzie od razu, podając jego nazwę i argumenty:
 
 ```bash
-# Sprawdź jedną stronę
+# Hasła: wygeneruj mocne hasło / oceń istniejące
+python3 main.py hasla generuj
+python3 main.py hasla generuj --dlugosc 24 --bez-znakow
+python3 main.py hasla sprawdz "MojeHaslo123!"
+
+# Porządki: najpierw podgląd, potem (z --wykonaj) faktyczne przeniesienie
+python3 main.py porzadki /sciezka/do/folderu
+python3 main.py porzadki /sciezka/do/folderu --wykonaj
+
+# Skaner nagłówków: jedna lub wiele stron, opcjonalnie JSON
 python3 main.py skaner-naglowkow example.com
-
-# Kilka stron naraz
-python3 main.py skaner-naglowkow example.com github.com mojastrona.pl
-
-# Wynik w formacie JSON (do automatyzacji / DevSecOps)
-python3 main.py skaner-naglowkow example.com --json
-
-# Zmień limit czasu na odpowiedź (domyślnie 10 s)
+python3 main.py skaner-naglowkow example.com github.com --json
 python3 main.py skaner-naglowkow example.com --timeout 5
 ```
 

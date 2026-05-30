@@ -83,7 +83,7 @@ def menu_interaktywne(lista_narzedzi):
     while True:
         print("")
         print("=" * 60)
-        print("  PRZYBORNIK AI SECURITY -- menu główne")
+        print("  PRZYBORNIK -- proste, przydatne narzędzia")
         print("=" * 60)
 
         # enumerate(..., start=1) numeruje narzędzia od 1 dla wygody użytkownika.
