@@ -1,0 +1,3 @@
+# Jedyna zewnętrzna zależność narzędzia.
+# requests służy do wykonania zapytania HTTP i odczytania nagłówków.
+requests>=2.31.0
