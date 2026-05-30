@@ -17,6 +17,8 @@ narzędzie jest osobnym, czytelnym plikiem, a uruchamiasz je z wygodnego menu
 |---|---|---|
 | **Generator i audytor haseł** | Tworzy mocne hasła i ocenia, czy Twoje hasło jest dobre. Działa offline. | dla każdego |
 | **Organizer plików** | Robi porządek w folderze (np. *Pobrane*) — sortuje pliki do podfolderów wg typu. Najpierw pokazuje podgląd. | dla każdego |
+| **Optymalizator makro i kosztów** | Liczy koszt 1 g białka i ocenia, czy produkt to opłacalne źródło białka. Przydatne na zakupach i na siłowni. | dla każdego |
+| **Generator fiszek z tekstu** | Wyciąga najczęstsze słowa z pliku tekstowego i zapisuje fiszki do CSV (import do Anki/Quizlet). | dla uczących się |
 | **Skaner nagłówków bezpieczeństwa HTTP** | Sprawdza, czy strona ustawia kluczowe nagłówki bezpieczeństwa, i daje wynik punktowy (np. `4/6`). | bardziej techniczne |
 
 > Kolejne narzędzia będą dodawane jako nowe pliki w folderze `narzedzia/` —
@@ -33,6 +35,8 @@ narzędzie jest osobnym, czytelnym plikiem, a uruchamiasz je z wygodnego menu
 │   ├── __init__.py               # oznacza folder jako pakiet Pythona
 │   ├── generator_hasel.py        # narzędzie: generator i audytor haseł
 │   ├── organizer_plikow.py       # narzędzie: organizer plików
+│   ├── kalkulator_makro.py       # narzędzie: optymalizator makro i kosztów
+│   ├── ekstraktor_slowek.py      # narzędzie: generator fiszek z tekstu
 │   └── skaner_naglowkow.py       # narzędzie: skaner nagłówków HTTP
 ├── README.md
 └── requirements.txt
@@ -86,8 +90,10 @@ z pytaniami na ekranie.
   PRZYBORNIK -- proste, przydatne narzędzia
 ============================================================
   1) Generator i audytor haseł
-  2) Organizer plików
-  3) Skaner nagłówków bezpieczeństwa HTTP
+  2) Generator fiszek z tekstu
+  3) Optymalizator makro i kosztów (białko)
+  4) Organizer plików
+  5) Skaner nagłówków bezpieczeństwa HTTP
   0) Wyjście
 ============================================================
 
@@ -107,6 +113,12 @@ python3 main.py hasla sprawdz "MojeHaslo123!"
 # Porządki: najpierw podgląd, potem (z --wykonaj) faktyczne przeniesienie
 python3 main.py porzadki /sciezka/do/folderu
 python3 main.py porzadki /sciezka/do/folderu --wykonaj
+
+# Makro: koszt 1 g białka i ocena opłacalności
+python3 main.py makro --cena 15 --waga 300 --bialko 18
+
+# Fiszki: wyciągnij najczęstsze słowa z pliku i zapisz CSV
+python3 main.py slowka artykul.txt --ile 30 --jezyk fr
 
 # Skaner nagłówków: jedna lub wiele stron, opcjonalnie JSON
 python3 main.py skaner-naglowkow example.com
