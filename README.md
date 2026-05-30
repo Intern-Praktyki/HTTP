@@ -41,6 +41,25 @@ gotowa do opublikowania przez **GitHub Pages**:
 
 Strona nie wymaga żadnych bibliotek ani serwera — to czysty HTML/CSS/JS.
 
+### Szybki start (uruchom stronę lokalnie)
+
+Najprościej — jeden plik uruchamia stronę i otwiera ją w przeglądarce:
+
+```bash
+python3 start_strony.py
+```
+
+albo z menu głównego: `python3 main.py` → wybierz **„Uruchom stronę WWW"**
+(lub `python3 main.py strona`).
+
+Ustawienia zmienisz w pliku [`konfiguracja.py`](konfiguracja.py):
+
+- `PORT` — port serwera (domyślnie `8000`, adres `http://localhost:8000`),
+- `AUTO_OTWORZ` — czy otwierać stronę automatycznie (`True`/`False`),
+- `FOLDER_STRONY` — folder ze stroną (domyślnie `docs`).
+
+Serwer zatrzymasz klawiszami **Ctrl+C**.
+
 ### Jak włączyć GitHub Pages
 
 1. Wejdź w repozytorium w **Settings → Pages**.
@@ -71,6 +90,8 @@ Aby obejrzeć stronę lokalnie, otwórz `docs/index.html` w przeglądarce
 │   ├── index.html                # strona z zakładkami
 │   ├── styl.css                  # wygląd strony
 │   └── js/                       # logika: nawigacja, detektyw haseł, wydatki
+├── start_strony.py               # launcher: uruchamia stronę lokalnie
+├── konfiguracja.py               # ustawienia strony (port, auto-otwieranie)
 ├── README.md
 └── requirements.txt
 ```
@@ -128,6 +149,7 @@ z pytaniami na ekranie.
   4) Optymalizator makro i kosztów (białko)
   5) Organizer plików
   6) Skaner nagłówków bezpieczeństwa HTTP
+  7) Uruchom stronę WWW (Detektyw haseł + Wydatki)
   0) Wyjście
 ============================================================
 
