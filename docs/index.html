@@ -23,6 +23,9 @@
       <!-- data-zakladka łączy przycisk z sekcją o tym samym id -->
       <button class="link-nawigacji aktywny" data-zakladka="start">START</button>
       <button class="link-nawigacji" data-zakladka="detektyw">DETEKTYW HASEŁ</button>
+      <button class="link-nawigacji" data-zakladka="hasla">GENERATOR HASEŁ</button>
+      <button class="link-nawigacji" data-zakladka="makro">MAKRO</button>
+      <button class="link-nawigacji" data-zakladka="fiszki">FISZKI</button>
       <button class="link-nawigacji" data-zakladka="wydatki">WYDATKI</button>
     </nav>
   </header>
@@ -46,6 +49,27 @@
         </article>
 
         <article class="karta">
+          <h3>🔑 Generator haseł</h3>
+          <p>Wygeneruj mocne, losowe hasło lub sprawdź, jak silne jest hasło,
+             którego już używasz.</p>
+          <button class="przycisk" data-zakladka="hasla">Otwórz</button>
+        </article>
+
+        <article class="karta">
+          <h3>🥩 Optymalizator makro</h3>
+          <p>Policz, ile kosztuje 1 g białka i oceń, czy produkt to opłacalne
+             źródło białka. Przydatne na zakupach i siłowni.</p>
+          <button class="przycisk" data-zakladka="makro">Otwórz</button>
+        </article>
+
+        <article class="karta">
+          <h3>📇 Generator fiszek</h3>
+          <p>Wczytaj tekst, a narzędzie wyciągnie najczęstsze słowa i przygotuje
+             plik CSV do importu w Anki/Quizlet.</p>
+          <button class="przycisk" data-zakladka="fiszki">Otwórz</button>
+        </article>
+
+        <article class="karta">
           <h3>💸 Śledzenie wydatków</h3>
           <p>Notuj wydatki dla każdej osoby osobno. Dane zapisują się tylko
              na Twoim urządzeniu — nic nie wychodzi na zewnątrz.</p>
@@ -54,9 +78,9 @@
 
         <article class="karta">
           <h3>🧰 Wersja konsolowa</h3>
-          <p>Cały przybornik istnieje też jako program w Pythonie: generator
-             haseł, organizer plików, optymalizator makro, fiszki z tekstu
-             i skaner nagłówków HTTP.</p>
+          <p>Dodatkowo przybornik ma narzędzia działające w Pythonie:
+             organizer plików oraz skaner nagłówków HTTP (te dwa wymagają
+             dostępu do dysku/sieci, więc nie działają w przeglądarce).</p>
           <p class="drobne">Szczegóły w pliku <code>README.md</code> repozytorium.</p>
         </article>
       </div>
@@ -84,6 +108,89 @@
 
       <!-- Tutaj JavaScript wstawi wynik sprawdzenia -->
       <div id="wynik-hasla" class="wynik"></div>
+    </section>
+
+    <!-- ============= SEKCJA: GENERATOR I AUDYTOR HASEŁ ============= -->
+    <section id="hasla" class="zakladka">
+      <h1>🔑 Generator haseł</h1>
+      <p class="podtytul">
+        Stwórz mocne, losowe hasło albo sprawdź siłę hasła, którego już używasz.
+        Wszystko liczone w przeglądarce — nic nie jest wysyłane.
+      </p>
+
+      <!-- Część 1: generowanie hasła -->
+      <h3>Wygeneruj hasło</h3>
+      <div class="formularz">
+        <input type="number" id="dlugosc-hasla" placeholder="Długość (np. 16)" min="4" max="100" value="16">
+        <label class="checkbox">
+          <input type="checkbox" id="znaki-specjalne" checked> znaki specjalne
+        </label>
+        <button class="przycisk" id="generuj-haslo">Generuj</button>
+      </div>
+      <!-- Wynik generowania (gotowe hasło + przycisk kopiowania) -->
+      <div id="wynik-generatora" class="wynik"></div>
+
+      <!-- Część 2: ocena siły hasła -->
+      <h3 style="margin-top:24px;">Sprawdź siłę hasła</h3>
+      <div class="formularz">
+        <input type="text" id="haslo-do-oceny" placeholder="Wpisz hasło do oceny">
+        <button class="przycisk wtorny" id="ocen-haslo">Oceń</button>
+      </div>
+      <div id="wynik-oceny" class="wynik"></div>
+    </section>
+
+    <!-- ================ SEKCJA: OPTYMALIZATOR MAKRO ================ -->
+    <section id="makro" class="zakladka">
+      <h1>🥩 Optymalizator makro</h1>
+      <p class="podtytul">
+        Policz koszt 1 g białka i sprawdź, czy produkt to opłacalne źródło
+        białka. Wszystkie obliczenia dzieją się w przeglądarce.
+      </p>
+
+      <div class="formularz">
+        <input type="number" id="makro-cena" placeholder="Cena (zł)" step="0.01" min="0">
+        <input type="number" id="makro-waga" placeholder="Waga (g)" step="1" min="0">
+        <input type="number" id="makro-bialko" placeholder="Białko na 100 g" step="0.1" min="0">
+      </div>
+      <div class="formularz">
+        <input type="number" id="makro-cel" placeholder="Dzienny cel białka (g)" step="1" min="1" value="150">
+        <button class="przycisk" id="makro-licz">Policz</button>
+      </div>
+
+      <!-- Tutaj JavaScript wstawi wynik (podsumowanie obliczeń) -->
+      <div id="makro-wynik" class="podsumowanie" style="display:none;"></div>
+    </section>
+
+    <!-- ================= SEKCJA: GENERATOR FISZEK ================= -->
+    <section id="fiszki" class="zakladka">
+      <h1>📇 Generator fiszek z tekstu</h1>
+      <p class="podtytul">
+        Wczytaj plik tekstowy (albo wklej tekst), a narzędzie wyłuska
+        najczęstsze słowa i przygotuje plik CSV do importu w Anki/Quizlet.
+      </p>
+
+      <div class="formularz">
+        <!-- Wczytanie pliku z dysku (czytane lokalnie, nic nie jest wysyłane) -->
+        <input type="file" id="fiszki-plik" accept=".txt,text/plain">
+        <select id="fiszki-jezyk">
+          <option value="auto">Język: auto</option>
+          <option value="pl">polski</option>
+          <option value="en">angielski</option>
+          <option value="fr">francuski</option>
+        </select>
+        <input type="number" id="fiszki-ile" placeholder="Ile słów" min="1" value="30">
+      </div>
+      <!-- Alternatywa: wklejenie tekstu wprost -->
+      <div class="formularz">
+        <textarea id="fiszki-tekst" placeholder="...albo wklej tekst tutaj" rows="5"></textarea>
+      </div>
+      <div class="formularz">
+        <button class="przycisk" id="fiszki-generuj">Generuj fiszki</button>
+        <button class="przycisk wtorny" id="fiszki-pobierz" style="display:none;">Pobierz CSV</button>
+      </div>
+
+      <!-- Podgląd wyniku (lista słów) -->
+      <div id="fiszki-wynik" class="podsumowanie" style="display:none;"></div>
     </section>
 
     <!-- ===================== SEKCJA: WYDATKI ===================== -->
@@ -129,6 +236,9 @@
   <!-- Skrypty na końcu, żeby strona zdążyła się wczytać przed ich uruchomieniem -->
   <script src="js/nawigacja.js"></script>
   <script src="js/detektyw.js"></script>
+  <script src="js/hasla.js"></script>
+  <script src="js/makro.js"></script>
+  <script src="js/fiszki.js"></script>
   <script src="js/wydatki.js"></script>
 </body>
 </html>

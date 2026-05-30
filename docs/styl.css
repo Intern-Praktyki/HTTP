@@ -130,6 +130,34 @@ code { background: rgba(0, 0, 0, .4); padding: 2px 6px; border-radius: 6px; }
 
 /* ----- Formularze i przyciski ----- */
 .formularz { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+/* Pole wieloliniowe (wklejanie tekstu w fiszkach). */
+textarea {
+  width: 100%;
+  background: var(--panel);
+  color: var(--tekst);
+  border: 1px solid rgba(255, 255, 255, .15);
+  border-radius: var(--promien);
+  padding: 12px 14px;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+  backdrop-filter: blur(6px);
+}
+textarea::placeholder { color: var(--tekst-szary); }
+textarea:focus { outline: 2px solid var(--akcent); }
+/* Etykieta z checkboxem (np. "znaki specjalne") -- żeby ładnie stała w rzędzie. */
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--tekst-szary);
+  font-size: .95rem;
+  white-space: nowrap;
+}
+.checkbox input { flex: none; min-width: auto; width: auto; }
+/* Drobne wypunktowanie w wynikach (lista uwag do hasła). */
+.wynik ul { margin: 6px 0 0 20px; font-size: .95rem; }
+.wynik code { font-size: 1rem; }
 input, select {
   background: var(--panel);
   color: var(--tekst);

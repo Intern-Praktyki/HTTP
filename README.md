@@ -35,9 +35,17 @@ gotowa do opublikowania przez **GitHub Pages**:
 - 🔐 **Detektyw haseł** — sprawdzanie wycieków bezpośrednio w przeglądarce.
   Hasło nie opuszcza Twojego urządzenia: liczony jest jego skrót, a do API
   wysyłane jest tylko 5 pierwszych znaków skrótu (k-anonimowość).
+- 🔑 **Generator i audytor haseł** — losowanie mocnych haseł i ocena siły hasła.
+- 🥩 **Optymalizator makro** — koszt 1 g białka i ocena opłacalności produktu.
+- 📇 **Generator fiszek** — wczytaj plik/tekst, pobierz gotowy CSV do Anki/Quizlet.
 - 💸 **Śledzenie wydatków** — osobna lista dla każdej osoby, z podsumowaniem
   i podziałem na kategorie. Dane zapisują się **tylko w Twojej przeglądarce**
   (localStorage) i nie są nigdzie wysyłane.
+
+Dwa narzędzia działają **tylko w wersji konsolowej** (Python), bo przeglądarka
+celowo nie daje im potrzebnych uprawnień: **organizer plików** (brak dostępu do
+przenoszenia plików na dysku) oraz **skaner nagłówków HTTP** (blokada CORS przy
+pobieraniu nagłówków cudzych stron).
 
 Strona nie wymaga żadnych bibliotek ani serwera — to czysty HTML/CSS/JS.
 Wygląd jest wzorowany na menu pauzy z gier (ciemne, półprzezroczyste panele
